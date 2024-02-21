@@ -47,7 +47,8 @@ sudo make install
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/48f1b6b8-8aa8-4980-84fd-1e0983b94904)
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/8d6ca6b3-c93d-4a4b-9f07-aa600040e998)
 
-## TASK2
+### TASK2
+
 Defining the black box design of UART with input ports, and output ports
 
 
