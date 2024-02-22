@@ -53,6 +53,22 @@ sudo make install
 
 Defining the black box design of UART with input ports, and output ports
 
+</details>	
+	<details>
+    <summary> Transmitter(Tx) Block </summary>
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/d1b109c9-82f0-458f-9023-aeed969164ab)
+
+</details>	
+	<details>
+    <summary> Reciever(Rx) Block </summary>
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/2dd7308c-22bc-4376-9e48-d56d91417111)
+
+
+
+
+
 
 
 
