@@ -64,7 +64,7 @@ Defining the black box design of UART with input ports, and output ports
 <li>Outputs : o_TX_Active, o_TX_Serial, o_TX_Done</li>
 <li>o_TX_Active : This is a output assert signal, get high when there it start bit and turns low after the stop bit</li>
 <li>o_TX_Serial : Serial 1-bit data output and it samples the i_TX_Byte</li>
-<li>o_TX_Done : When the transmit is complete, this will be driven high for one clock cycle</li>
+<li>o_TX_Done : When the transmit is complete, this signal be driven high for one clock cycle</li>
 
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/d1b109c9-82f0-458f-9023-aeed969164ab)
 
@@ -77,7 +77,7 @@ Defining the black box design of UART with input ports, and output ports
 <li>i_RX_Serial : Serial bit data input</li>
 <li>Outputs : o_RX_Byte, o_RX_Done</li>
 <li>o_RX_Byte : This is 8-bit data output</li>
-<li>o_RX_Done : When the receive is complate, this will be driven high for one clock cycle</li>
+<li>o_RX_Done : When the receive is complete, this signal be driven high for one clock cycle</li>
 
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/2dd7308c-22bc-4376-9e48-d56d91417111)
 
