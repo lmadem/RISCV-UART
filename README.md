@@ -81,6 +81,13 @@ Defining the black box design of UART with input ports, and output ports
 
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/2dd7308c-22bc-4376-9e48-d56d91417111)
 
+</details>	
+	<details>
+    <summary> UART Packet Format </summary>
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/f1e98697-e1c3-4a66-8e87-5a8cb4e7ebca)
+
+
 
 
 
