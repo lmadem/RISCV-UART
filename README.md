@@ -60,8 +60,11 @@ make
 ```
 
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/52c64f8b-a5c1-4ba4-a3d8-67bfd3dbf75f)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/5c9dda41-58ab-4022-9086-9f89cb6f17c4)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/edd9d23a-5485-4cf3-8f20-f852abb99ba8)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/b1dffde7-1583-48a5-821e-d5c7c3ff88c0)
 
 
@@ -79,14 +82,18 @@ make
 ```
 
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/ef796255-fdda-4f02-9c82-4989537f4a49)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/bdb0f467-4b9f-4a66-a946-e267be8cc1d3)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/6bd8153c-191c-4bc1-a2d2-bd9407f85fce)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/e1683f08-fa85-4d26-917d-359ac24de46a)
 
 
 </details>	
 	<details>
     <summary> ngspice </summary>
+		
 ```bash
 After downloading the tarball from https://sourceforge.net/projects/ngspice/files/ to a local directory, unpack it using:
 $ tar -zxvf ngspice-37.tar.gz
@@ -99,7 +106,9 @@ $ sudo make install
 ```
 
 ![ngspice 1](https://github.com/lmadem/RISCV-UART/assets/93139766/cc71bc79-400e-4b69-a3e9-cb0f295284c2)
+
 ![ngspice 2](https://github.com/lmadem/RISCV-UART/assets/93139766/9320a9df-a258-4fd8-a7bd-3793e0a97684)
+
 ![ngspice 3](https://github.com/lmadem/RISCV-UART/assets/93139766/9df463b2-f453-4b49-9e20-9a120cf9bc2d)
 
 </details>	
@@ -123,6 +132,7 @@ make install
 ```
 
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/09a50dc5-c8bf-4921-983d-803a10068fa5)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/420a69ee-6445-4d5b-8bb2-c43b61410014)
 
 </details>	
@@ -168,8 +178,11 @@ make test
 ```
 
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/7c522810-b617-4193-b53c-da07849f297c)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/7f50d4a2-e131-41d9-8f8d-03a59f3783fd)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/a255c6c1-eb11-4d43-9896-5c83c32d1667)
+
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/cb80f786-c645-4987-a654-8d49781c3e09)
 
 
