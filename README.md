@@ -190,7 +190,7 @@ make test
 
 </details>
 
-### TASK2
+## TASK2
 
 Defining the black box design of UART with input ports, and output ports
 
