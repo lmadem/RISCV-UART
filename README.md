@@ -229,9 +229,11 @@ Defining the black box design of UART with input ports, and output ports
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/f1e98697-e1c3-4a66-8e87-5a8cb4e7ebca)
 
 
+</details>
 
+## TASK3
 
-
+Basics of Functional Simulation. Upload lab snapshots from iverilog and gtkwave on your GitHub repo with terminal name being clearly visible
 
 
 
