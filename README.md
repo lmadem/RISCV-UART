@@ -235,6 +235,445 @@ Defining the black box design of UART with input ports, and output ports
 
 Basics of Functional Simulation. Upload lab snapshots from iverilog and gtkwave on your GitHub repo with terminal name being clearly visible
 
+Designed a simple UART model with Transmitter and Receiver Blocks with BAUD 115200. Please find the below verilog files, waveforms and screenshots
+
+</details>	
+	<details>
+    <summary> Transmitter Block </summary>
+
+```bash
+//This file containts the UART Transmitter Block. It is able to transfer one start bit, eight bit of serial data, one stop bit and no parity bit. When the transmit is complete, o_tx_done will be driven high for one clock cycle
+
+
+//set parameter CLKS_PER_BIT as follows
+//CLK_PER_BIT = (Frequency of i_clock) / (Frequency of UART)
+//Example : 10 MHz clock, 115200 baud rate
+// (10000000 / 115200) = 87
+
+
+module UART_Transmitter #(parameter CLKS_PER_BIT = 87)
+  (input i_clock, //System Clock
+   input i_TX_Start, //Start Signal
+   input [7:0] i_TX_Byte, //Data bits
+   output o_TX_Active, //Output assert signal to indicate the data transfer
+   output reg o_TX_Serial, //Output serial data
+   output o_TX_Done //Output assert signal to indicate the completion of data transfer
+  );
+  
+  parameter S_IDLE = 3'b000;
+  parameter S_TX_START_BIT = 3'b001;
+  parameter S_TX_DATA_BITS = 3'b010;
+  parameter S_TX_STOP_BIT = 3'b011;
+  parameter S_CLEANUP = 3'b100;
+  
+  //Initialising values to the below internal registers as there is no reset in the design
+  
+  reg [2:0] r_SM_main = 0; //register to store values for the state machine logic
+  reg [7:0] r_clock_count = 0; //Counter to calcualte the CLKS_PER_BIT
+  reg [2:0] r_bit_index = 0; //Counter for the bit indexes
+  reg [7:0] r_TX_data = 0; //Internal register to handlr the input data : i_TX_Byte
+  reg r_TX_Done; //Internal signal for output - indicate the completion of data transfer
+  reg r_TX_Active; //Internal signal for output - indicate the start and end of data transfer
+  
+  always @(posedge i_clock)
+    begin
+      case(r_SM_main)
+        
+        // IDLE STATE
+        S_IDLE :
+          begin 
+            r_TX_Done <= 0;
+            o_TX_Serial <= 0;
+            r_clock_count <= 0;
+            r_bit_index <= 0;
+            
+            if(i_TX_Start == 1'b1)
+              begin
+                r_TX_Active <= 1;
+                r_TX_data <= i_TX_Byte;
+                r_SM_main <= S_TX_START_BIT;
+              end
+            else
+              r_SM_main <= S_IDLE;
+          end
+        
+        
+        //Send out start bit : 0
+        // START BIT
+        S_TX_START_BIT : 
+          begin 
+            o_TX_Serial <= 0;
+            //wait till CLKS_PER_BIT - 1 for the start bit to finish
+            if(r_clock_count < CLKS_PER_BIT - 1)
+              begin
+                r_clock_count = r_clock_count + 1; //Incrementing Counter
+                r_SM_main <= S_TX_START_BIT;
+              end
+            else
+              begin
+                r_clock_count <= 0; // assigning counter to zero
+                r_SM_main <= S_TX_DATA_BITS;
+              end    
+          end
+        
+        //Wait CLKS_PER_BIT - 1 clock cycles for data bits to finish
+        // DATA BITS
+        S_TX_DATA_BITS :
+          begin 
+            o_TX_Serial = r_TX_data[r_bit_index];
+            if(r_clock_count < CLKS_PER_BIT - 1)
+              begin
+                r_clock_count <= r_clock_count + 1;
+                r_SM_main <= S_TX_DATA_BITS;
+              end
+            else
+              begin
+                r_clock_count <= 0;
+                //check if we have sent out all bits
+                if(r_bit_index < 7)
+                  begin
+                    r_bit_index <= r_bit_index + 1;
+                    r_SM_main <= S_TX_DATA_BITS;
+                  end
+                else
+                  begin
+                    r_bit_index <= 0;
+                    r_SM_main <= S_TX_STOP_BIT;
+                  end
+              end
+          end
+        
+        //Send out stop bit : 1
+        // STOP BIT 
+        S_TX_STOP_BIT :
+          begin 
+            o_TX_Serial <= 1;
+            //wait CLKS_PER_BIT - 1 clock cyles for stop bit to finish
+            if(r_clock_count < CLKS_PER_BIT - 1)
+              begin
+                r_clock_count <= r_clock_count + 1;
+                r_SM_main <= S_TX_STOP_BIT;
+              end
+            else
+              begin
+                r_TX_Done <= 1;
+                r_clock_count <= 0;
+                r_SM_main <= S_CLEANUP;
+                r_TX_Active <= 0;
+              end
+          end
+        
+        //stay here for one clock
+        // CLEANUP STATEo_
+        S_CLEANUP :
+          begin 
+            r_TX_Done <= 1;
+            r_SM_main <= S_IDLE;
+          end
+        
+        default : r_SM_main <= S_IDLE;
+           
+      endcase
+    end
+  
+  assign o_TX_Active = r_TX_Active;
+  assign o_TX_Done = r_TX_Done;
+  
+  
+endmodule
+```
+
+</details>	
+	<details>
+    <summary> Receiver Block </summary>
+
+```bash
+//This file containts the UART Receiver Block. It is able to receive one start bit, eight bit of serial data, one stop bit and no parity bit. When the receive is complete, o_RX_Done will be driven high for one clock cycle
+
+
+//set parameter CLKS_PER_BIT as follows
+//CLK_PER_BIT = (Frequency of i_clock) / (Frequency of UART)
+//Example : 10 MHz clock, 115200 baud rate
+// (10000000 / 115200) = 87
+
+module UART_Receiver #(parameter CLKS_PER_BIT = 87) (
+  input i_clock, //System clock
+  input i_RX_Serial, //Serial bit data input
+  output [7:0] o_RX_Byte, // Output data 
+  output o_RX_Done // Output signal : asserts high when the recieve is complete
+);
+  
+  parameter S_IDLE = 3'b000;
+  parameter S_RX_START_BIT = 3'b001;
+  parameter S_RX_DATA_BITS = 3'b010;
+  parameter S_RX_STOP_BIT = 3'b011;
+  parameter S_CLEANUP = 3'b100;
+  
+  //Initialising values to all the internal registers as there is no reset
+  reg r_RX_Data1 = 1; //for flipflop synchronizer
+  reg r_RX_Data = 1; //for flipflop synchronizer
+  
+  reg [2:0] r_SM_main = 0; //register to store values for the state machine logic
+  reg [7:0] r_clock_count = 0; //Counter to validate the CLKS_PER_BIT
+  reg [2:0] r_bit_index = 0; //Counter for the bit indexes - 8 bits in total
+  reg [7:0] r_RX_Byte = 0; //Internal register to handle the output data : o_RX_Byte
+  reg r_RX_Done; //Internal signal for output - indicates the completion of data transfer
+  
+  
+  //Purpose : Double-register for the incoming data : similar to 2 flipflop sync
+  always @(posedge i_clock)
+    begin
+      r_RX_Data1 <= i_RX_Serial;
+      r_RX_Data <= r_RX_Data1;
+    end
+  
+  
+  //State Machine Logic
+  
+  always @(posedge i_clock)
+    begin
+      case(r_SM_main)
+        
+        //IDLE STATE
+        S_IDLE :
+          begin
+            r_RX_Done <= 0;
+            r_clock_count <= 0;
+            r_bit_index <= 0;
+            
+            if(r_RX_Data == 0) //Start bit detected
+              r_SM_main <= S_RX_START_BIT;
+            else
+              r_SM_main <= S_IDLE;
+          end
+        
+        
+        //check middle of the bit to make sure if it is still low
+        //START BIT
+        S_RX_START_BIT :
+          begin
+            if(r_clock_count == (CLKS_PER_BIT - 1) / 2)
+              begin
+                if(r_RX_Data == 0)
+                  begin
+                    r_clock_count <= 0; //reset counter, found the middle
+                    r_SM_main <= S_RX_DATA_BITS;
+                  end
+                else
+                  r_SM_main <= S_RX_START_BIT;
+              end
+            else
+              begin
+                r_clock_count <= r_clock_count + 1; 
+                r_SM_main <= S_RX_START_BIT;
+              end
+          end
+        
+        
+        //wait CLKS_PER_BIT - 1 clock cycles to sample serial data
+        //DATA BITS
+        S_RX_DATA_BITS :
+          begin
+            if(r_clock_count < CLKS_PER_BIT - 1)
+              begin
+                r_clock_count <= r_clock_count + 1;
+                r_SM_main <= S_RX_DATA_BITS;
+              end
+            else
+              begin
+                r_clock_count <= 0;
+                r_RX_Byte[r_bit_index] <= r_RX_Data;
+                
+                //check if we have received all bits
+                if(r_bit_index < 7)
+                  begin
+                    r_bit_index <= r_bit_index + 1;
+                    r_SM_main <= S_RX_DATA_BITS;
+                  end
+                else
+                  begin
+                    r_bit_index <= 0;
+                    r_SM_main <= S_RX_STOP_BIT;
+                  end
+              end
+          end
+        
+        
+        //receive stop bit = 1
+        //STOP BIT
+        S_RX_STOP_BIT :
+          begin
+            //wait CLKS_PER_BIT - 1 clock cycles for stop bit to finish
+            if(r_clock_count < CLKS_PER_BIT - 1)
+              begin
+                r_clock_count <= r_clock_count + 1;
+                r_SM_main <= S_RX_STOP_BIT;
+              end
+            else
+              begin
+                r_RX_Done <= 1;
+                r_clock_count <= 0;
+                r_SM_main <= S_CLEANUP;
+              end
+          end
+        
+        //Stay here for one clock
+        S_CLEANUP :
+          begin
+            r_SM_main <= S_IDLE;
+            r_RX_Done <= 0;
+          end
+        
+        default :
+          r_SM_main <= S_IDLE;
+        
+      endcase
+    end
+  
+  assign o_RX_Done = r_RX_Done;
+  assign o_RX_Byte = r_RX_Byte;
+
+endmodule
+
+```
+
+</details>	
+	<details>
+    <summary> Testbench </summary>
+
+```bash
+
+`include "Transmitter.v"
+`include "Receiver.v"
+`timescale 1ns/10ps;
+module UART_tb;
+  //Testbench uses a 10MHz clock
+  //Interface to 115200 baud UART
+  // 10000000 / 115200 = 87 clocks per bit
+  
+  parameter CLOCK_PERIOD_NS = 100;
+  parameter CLKS_PER_BIT = 87;
+  parameter BIT_PERIOD = 8700;
+  
+  reg i_clock;
+  reg i_TX_Start;
+  reg [7:0] i_TX_Byte;
+  reg i_RX_Serial;
+  
+  wire o_TX_Done;
+  wire o_TX_Serial;
+  wire o_TX_Active;
+  wire [7:0] o_RX_Byte;
+  wire o_RX_Done;
+  
+  task preset;
+    begin
+      i_clock <= 0;
+      i_TX_Start <= 0;
+      i_TX_Byte <= 0;
+      i_RX_Serial <= 1;
+    end
+  endtask
+  
+  always #(CLOCK_PERIOD_NS/2) i_clock = ~i_clock;
+  
+  UART_Transmitter #(.CLKS_PER_BIT(CLKS_PER_BIT)) uart_tx (
+    .i_clock(i_clock),
+    .i_TX_Start(i_TX_Start),
+    .i_TX_Byte(i_TX_Byte),
+    .o_TX_Active(o_TX_Active),
+    .o_TX_Serial(o_TX_Serial),
+    .o_TX_Done(o_TX_Done)
+  );
+  
+  UART_Receiver #(.CLKS_PER_BIT(CLKS_PER_BIT)) uart_rx (
+    .i_clock(i_clock),
+    .i_RX_Serial(i_RX_Serial),
+    .o_RX_Byte(o_RX_Byte),
+    .o_RX_Done(o_RX_Done)
+  );
+  
+  task UART_WRITE_BYTE(input [7:0] data_in);
+    integer j;
+    begin
+      
+      //Send Start Bit
+      i_RX_Serial <= 0;
+      #(BIT_PERIOD);
+      #1000;
+      
+      //Send Data Byte
+      for(j = 0;j<8;j=j+1)
+        begin
+          i_RX_Serial <= data_in[j];
+          #(BIT_PERIOD);
+        end
+      
+      //Send Stop Bit
+      i_RX_Serial <= 1;
+      #(BIT_PERIOD);
+    end
+  endtask
+  
+  
+  initial
+    begin
+      preset;
+      
+      // Transmitter 
+      repeat(3) @(posedge i_clock);
+      i_TX_Start <= 1;
+      i_TX_Byte <= 8'hCD;
+      @(posedge i_clock);
+      i_TX_Start <= 0;
+      @(posedge o_TX_Done);
+      
+      @(posedge i_clock);
+      UART_WRITE_BYTE(8'h3F);
+      @(posedge i_clock);
+      
+      if(o_RX_Byte == 8'h3F)
+        $display("Test Passed - Correct Byte Received:");
+      else
+        $display("Test Failed - InCorrect Byte Received:");
+      
+      $finish;
+    end
+  
+  initial begin
+    $dumpfile("dump.vcd");
+    $dumpvars(0,UART_tb.uart_tx);
+    $dumpvars(0,UART_tb.uart_rx);
+  end
+  
+endmodule
+
+```
+
+</details>	
+	<details>
+    <summary> Execution Steps </summary>
+
+```bash
+iverilog testbench.v
+./a.out
+gtkwave dump.vcd
+```
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/f017a258-27c9-4f16-8031-aed741628123)
+
+</details>	
+	<details>
+    <summary> Waveforms </summary>
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/3a186c56-9d54-44ae-8195-92e882f0eea8)
+
+
+
+
+
+
+
 
 
 
