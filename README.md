@@ -669,6 +669,29 @@ gtkwave dump.vcd
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/3a186c56-9d54-44ae-8195-92e882f0eea8)
 
 
+</details>
+
+## TASK4
+
+Perform Synthesis for the UART design, followed by gate level simulation. Upload snapshots from Yosys, gtkwave pre-synthesis and post-synthesis simulation waveforms on GitHub Repo
+
+The goal of this task is to convert the RTL design into the gate level netlist. This task was performed using yosys tool. It takes RTL design and the liberty file(.lib) as inputs and gives the netlist as an end result after synthesis. Please look at the below highlights for more information.
+
+
+</details>	
+	<details>
+    <summary> Pre-Synthesis </summary>
+
+<li>Screenshots of gtkwave and iverilog</li>
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/accacd7b-fbc4-453c-9fa4-7cb90ef2e941)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/0eb1eb66-d872-43a8-b440-d39f0c3deee7)
+
+
+
+
+
 
 
 
