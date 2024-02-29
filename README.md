@@ -680,15 +680,66 @@ The goal of this task is to convert the RTL design into the gate level netlist. 
 
 </details>	
 	<details>
-    <summary> Pre-Synthesis </summary>
+    <summary> Pre-Synthesis - Simulation Results </summary>
 
 <li>Screenshots of gtkwave and iverilog</li>
 
-![image](https://github.com/lmadem/RISCV-UART/assets/93139766/accacd7b-fbc4-453c-9fa4-7cb90ef2e941)
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/917f7ae9-9015-4a28-b9d6-454b34d9d371)
 
-![image](https://github.com/lmadem/RISCV-UART/assets/93139766/0eb1eb66-d872-43a8-b440-d39f0c3deee7)
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/e40a9415-e483-4fcc-9de7-fedfc92dbcd3)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/47b1f003-8ea2-4f5d-97d6-d555d31dcedd)
 
 
+</details>	
+	<details>
+    <summary> Execution Steps for Synthesis </summary>
+
+<li>I have two blocks: Transmitter and Receiver in the design and both of them are independent blocks. Repeated the below mentioned steps for receiver block to generate reciever_netlist file</li>
+
+```bash
+Invoke yosys tool : $ yosys
+read liberty(.lib) files : $ read_liberty -lib sky130RTLDesignAndSynthesisWorkshop/my_lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+reading RTL design files : $ read_verilog Transmitter.v
+Synthesis step : $ synth -top UART_Transmitter(give module name)
+$ abc -liberty sky130RTLDesignAndSynthesisWorkshop/my_lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+Write converted netlist to a .v file : $ write_verilog -noattr Trasmitter_netlist.v
+```
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/b9953cc0-d293-4841-a4f4-0be372712b42)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/1ca71bfc-b6a7-4557-b5d2-68b787a06ae2)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/a3c0071f-4862-4ec5-b88b-20c154791320)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/13b17977-4b03-4313-9d6e-b62534e33312)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/d85ccd70-e4fa-4cd8-9107-928517e16440)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/e01303e1-37b3-43dc-abd5-2c08105bf86c)
+
+
+</details>	
+	<details>
+    <summary> Post Synthesis - Simulation Results </summary>
+
+<li>Screenshots of gtkwave and iverilog</li>
+
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/dfc4627f-32f2-49d5-ac8e-e19ca1d693c9)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/08b56e4d-71b9-474e-b11d-2dbc2125d0f8)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/88da4135-43b3-4b85-986a-eb11f47071bc)
+
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/1b26ace6-1163-483c-856d-068f622d0a7a)
+
+
+</details>	
+	<details>
+    <summary> Observations </summary>
+
+The functional simulation results and post-synthesis results were same
 
 
 
