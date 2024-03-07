@@ -197,14 +197,18 @@ Defining the black box design of UART with input ports, and output ports
 </details>	
 	<details>
     <summary> Transmitter(Tx) Block </summary>
-<li> The transimtter and reciever blocks must agree on a baud rate. Based on system clock frequency and baud rate, the clks_per_bit is calculated </li>
+<li> The transmitter and reciever blocks must agree on a baud rate. Based on system clock frequency and baud rate, the clks_per_bit is calculated </li>
+		
 <li>Inputs : i_clock, i_TX_Start, i_TX_Byte </li>
+
 <li>i_clock : This is a system clock </li>
-<li>i_TX_Start : This is a control signal to start the Transimtter block </li>
+<li>i_TX_Start : This is a control signal to start the Transmitter block </li>
 <li>i_TX_Byte : This is 8-bit input data stream </li>
+
 <li>Outputs : o_TX_Active, o_TX_Serial, o_TX_Done</li>
-<li>o_TX_Active : This is a output assert signal, get high when there is start bit and turns low after the stop bit</li>
-<li>o_TX_Serial : Serial 1-bit data output and it samples the i_TX_Byte</li>
+
+<li>o_TX_Active : This is a output assert signal, gets high when there is start bit and turns low after the stop bit</li>
+<li>o_TX_Serial : Serial 1-bit data output and it samples the i_TX_Byte input</li>
 <li>o_TX_Done : When the transmit is complete, this signal be driven high for one clock cycle</li>
 
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/d1b109c9-82f0-458f-9023-aeed969164ab)
@@ -214,9 +218,12 @@ Defining the black box design of UART with input ports, and output ports
     <summary> Reciever(Rx) Block </summary>
 
 <li>Inputs : i_clock, i_RX_Serial</li>
+
 <li>i_clock : This is a system clock</li>
 <li>i_RX_Serial : Serial bit data input</li>
+
 <li>Outputs : o_RX_Byte, o_RX_Done</li>
+
 <li>o_RX_Byte : This is 8-bit data output</li>
 <li>o_RX_Done : When the receive is complete, this signal be driven high for one clock cycle</li>
 
