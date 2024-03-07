@@ -739,7 +739,7 @@ Write converted netlist to a .v file : $ write_verilog -noattr Trasmitter_netlis
 	<details>
     <summary> Observations </summary>
 
-The functional simulation results and post-synthesis results were same
+The functional simulation results and gate-level simulation results were matching.
 
 
 </details>
