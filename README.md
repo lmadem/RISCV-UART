@@ -742,6 +742,11 @@ Write converted netlist to a .v file : $ write_verilog -noattr Trasmitter_netlis
 The functional simulation results and post-synthesis results were same
 
 
+## References
+
+https://nandland.com/uart-rs-232-serial-port-com-port/
+https://nandland.com/uart-serial-port-module/
+
 
 
 
