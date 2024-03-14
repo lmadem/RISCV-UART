@@ -739,7 +739,7 @@ Write converted netlist to a .v file : $ write_verilog -noattr Trasmitter_netlis
 
 ![image](https://github.com/lmadem/RISCV-UART/assets/93139766/88da4135-43b3-4b85-986a-eb11f47071bc)
 
-![image](https://github.com/lmadem/RISCV-UART/assets/93139766/1b26ace6-1163-483c-856d-068f622d0a7a)
+![image](https://github.com/lmadem/RISCV-UART/assets/93139766/390afdd9-9b4d-4d2b-802f-abfb709d76ba)
 
 
 </details>	
